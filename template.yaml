@@ -1,0 +1,40 @@
+# https://github.com/awslabs/serverless-application-model/blob/develop/versions/2016-10-31.md
+# Indentation needs to be set with spaces, because YAML...
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: API endpoint to retrieve a single review
+
+Globals:
+    Api:
+        # API Gateway regional endpoints
+        EndpointConfiguration: EDGE
+        Cors:
+            AllowMethods: "'*'"
+            AllowHeaders: "'*'"
+            AllowOrigin: "'*'"
+
+Resources:
+    RetrieveReviewFunction:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: retrieve-review.default
+            Runtime: nodejs10.x
+            Timeout: 30
+            CodeUri: ./dist/retrieve-review
+            Policies:
+                - AWSLambdaVPCAccessExecutionRole
+                - AmazonSESFullAccess
+                - SecretsManagerReadWrite
+            Events:
+                GetMatchStatsResource:
+                    Type: Api
+                    Properties:
+                        Path: /{proxy+}
+                        Method: any
+
+Outputs:
+    RetrieveReviewApi:
+        Description: URL to retrieve a single review
+        Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/retrieve-review'
+        Export:
+            Name: RetrieveReviewApi
