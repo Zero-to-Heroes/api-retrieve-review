@@ -10,7 +10,7 @@ Globals:
         EndpointConfiguration: EDGE
         Cors:
             AllowMethods: "'*'"
-            AllowHeaders: "'*'"
+            AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
             AllowOrigin: "'*'"
 
 Resources:
