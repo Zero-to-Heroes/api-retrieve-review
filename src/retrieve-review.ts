@@ -1,4 +1,4 @@
-import { getConnection } from './db/rds';
+import { getConnection } from './db/rds-ro';
 import { ReviewMessage } from './review-message';
 
 // This example demonstrates a NodeJS 8.10 async handler[1], however of course you could use
