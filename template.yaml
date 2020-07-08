@@ -25,6 +25,8 @@ Resources:
                 - AWSLambdaVPCAccessExecutionRole
                 - AmazonSESFullAccess
                 - SecretsManagerReadWrite
+            Tags:
+                LambdaName: api-retrieve-review
             Events:
                 GetMatchStatsResource:
                     Type: Api
