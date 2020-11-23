@@ -16,7 +16,10 @@ export default async (event): Promise<any> => {
 			WHERE reviewId = '${reviewId}'
 		`,
 		);
+		// TODO: also merge with the other stats from the match_stats table, like is done in
+		// the retrieve-user-match-stats API
 		console.log('dbResults', dbResults);
+		await mysql.end();
 
 		const review = dbResults && dbResults.length > 0 ? dbResults[0] : null;
 		console.log('review', review);
