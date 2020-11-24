@@ -19,7 +19,7 @@ Resources:
         Properties:
             Handler: retrieve-review.default
             Runtime: nodejs10.x
-            Timeout: 30
+            Timeout: 2
             CodeUri: ./dist/retrieve-review
             # https://stackoverflow.com/questions/39144688/aws-lambda-invoke-not-calling-another-lambda-function-node-js
             # VpcConfig:
