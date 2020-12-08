@@ -1,3 +1,4 @@
+import SqlString from 'sqlstring';
 import { getConnection } from './db/rds-ro';
 import { ReviewMessage } from './review-message';
 
@@ -8,12 +9,13 @@ export default async (event): Promise<any> => {
 	try {
 		console.log('event aa', event);
 		const mysql = await getConnection();
+		const escape = SqlString.escape;
 		const reviewId = event.pathParameters && event.pathParameters.proxy;
 		console.log('reviewId', reviewId);
 		const dbResults: readonly ReviewMessage[] = await mysql.query(
 			`
 			SELECT * FROM replay_summary 
-			WHERE reviewId = '${reviewId}'
+			WHERE reviewId = ${escape(reviewId)}
 		`,
 		);
 		// TODO: also merge with the other stats from the match_stats table, like is done in
