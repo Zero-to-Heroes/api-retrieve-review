@@ -15,11 +15,19 @@ export default async (event): Promise<any> => {
 			WHERE reviewId = ${escape(reviewId)}
 		`,
 	);
-	// TODO: also merge with the other stats from the match_stats table, like is done in
-	// the retrieve-user-match-stats API
+	let review = dbResults && dbResults.length > 0 ? dbResults[0] : null;
+	if (!review) {
+		const bgResults: readonly any[] = await mysql.query(
+			`
+				SELECT * FROM bgs_perfect_game 
+				WHERE reviewId = ${escape(reviewId)}
+			`,
+		);
+		review = bgResults && bgResults.length > 0 ? bgResults[0] : null;
+	}
+
 	await mysql.end();
 
-	const review = dbResults && dbResults.length > 0 ? dbResults[0] : null;
 	const response = {
 		statusCode: 200,
 		headers: {
