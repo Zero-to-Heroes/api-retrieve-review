@@ -7,8 +7,10 @@ import { ReviewMessage } from './review-message';
 // [1]: https://aws.amazon.com/blogs/compute/node-js-8-10-runtime-now-available-in-aws-lambda/
 export default async (event): Promise<any> => {
 	const mysql = await getConnection();
-	const escape = SqlString.escape;
-	const reviewId = event.pathParameters && event.pathParameters.proxy;
+	const escape = SqlString.escape;	
+	const reviewId = event.requestContext?.http?.path?.length
+		? event.requestContext.http.path.split('/')[1]
+		: event.pathParameters?.proxy;
 	const dbResults: readonly ReviewMessage[] = await mysql.query(
 		`
 			SELECT * FROM replay_summary 
