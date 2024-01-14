@@ -4,36 +4,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: API endpoint to retrieve a single review
 
-Globals:
-    Api:
-        # API Gateway regional endpoints
-        EndpointConfiguration: EDGE
-        Cors:
-            AllowMethods: "'*'"
-            AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-            AllowOrigin: "'*'"
-
 Resources:
-    RetrieveReviewFunction:
-        Type: AWS::Serverless::Function
-        Properties:
-            Handler: retrieve-review.default
-            Runtime: nodejs16.x
-            Timeout: 2
-            CodeUri: ./dist/retrieve-review
-            Policies:
-                - AWSLambdaVPCAccessExecutionRole
-                - AmazonSESFullAccess
-                - SecretsManagerReadWrite
-                - arn:aws:iam::478062583808:policy/CloudWatchPolicyForLambda # See https://stackoverflow.com/questions/51166504/disable-cloudwatch-to-monitor-logs-for-lambda-function
-            Tags:
-                LambdaName: api-retrieve-review
-            Events:
-                GetMatchStatsResource:
-                    Type: Api
-                    Properties:
-                        Path: /{proxy+}
-                        Method: any
     RetrieveReviewFunction2:
         Type: AWS::Serverless::Function
         Properties:
@@ -41,20 +12,16 @@ Resources:
             Runtime: nodejs16.x
             CodeUri: ./dist/retrieve-review
             Timeout: 2
+            Layers:
+                - !Sub "arn:aws:lambda:${AWS::Region}:580247275435:layer:LambdaInsightsExtension:14"
             Policies:
                 - AWSLambdaVPCAccessExecutionRole
                 - SecretsManagerReadWrite
                 - AmazonSESFullAccess
-                - arn:aws:iam::478062583808:policy/CloudWatchPolicyForLambda # See https://stackoverflow.com/questions/51166504/disable-cloudwatch-to-monitor-logs-for-lambda-function
+                - arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy
+                # - arn:aws:iam::478062583808:policy/CloudWatchPolicyForLambda # See https://stackoverflow.com/questions/51166504/disable-cloudwatch-to-monitor-logs-for-lambda-function
             Tags:
                 LambdaName: api-retrieve-review-2
             AutoPublishAlias: live
             FunctionUrlConfig:
                 AuthType: NONE
-
-Outputs:
-    RetrieveReviewApi:
-        Description: URL to retrieve a single review
-        Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/retrieve-review'
-        Export:
-            Name: RetrieveReviewApi
