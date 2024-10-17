@@ -1,16 +1,16 @@
+import { getConnectionProxy } from '@firestone-hs/aws-lambda-utils';
 import SqlString from 'sqlstring';
-import { getConnection } from './db/rds-ro';
 import { ReviewMessage } from './review-message';
 
 // This example demonstrates a NodeJS 8.10 async handler[1], however of course you could use
 // the more traditional callback-style handler.
 // [1]: https://aws.amazon.com/blogs/compute/node-js-8-10-runtime-now-available-in-aws-lambda/
 export default async (event): Promise<any> => {
-	const mysql = await getConnection();
-	const escape = SqlString.escape;	
+	const escape = SqlString.escape;
 	const reviewId = event.requestContext?.http?.path?.length
 		? event.requestContext.http.path.split('/')[1]
 		: event.pathParameters?.proxy;
+	const mysql = await getConnectionProxy();
 	const dbResults: readonly ReviewMessage[] = await mysql.query(
 		`
 			SELECT * FROM replay_summary 
